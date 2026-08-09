@@ -1,0 +1,23 @@
+[package]
+name = "aethertrace"
+version = "0.1.0"
+edition = "2024"
+description = "AetherTrace — a premium, physically-based path tracer written in Rust."
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+indicatif = "0.17"
+png = "0.17"
+rayon = "1.10"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 1
+
+[dev-dependencies]
