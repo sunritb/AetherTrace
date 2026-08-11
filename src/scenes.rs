@@ -20,6 +20,7 @@ fn add_quad(scene: &mut Scene, p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, material:
     scene.add_quad(p0, p1, p2, p3, material);
 }
 
+#[allow(clippy::too_many_arguments)]
 fn add_box(scene: &mut Scene, cx: f32, cy: f32, cz: f32, sx: f32, sy: f32, sz: f32, mat: u32) {
     let mn = Vec3::new(cx - sx * 0.5, cy - sy * 0.5, cz - sz * 0.5);
     let mx = Vec3::new(cx + sx * 0.5, cy + sy * 0.5, cz + sz * 0.5);
@@ -73,7 +74,18 @@ fn add_box(scene: &mut Scene, cx: f32, cy: f32, cz: f32, sx: f32, sy: f32, sz: f
     );
 }
 
-fn add_box_rot_y(scene: &mut Scene, cx: f32, cy: f32, cz: f32, sx: f32, sy: f32, sz: f32, deg: f32, mat: u32) {
+#[allow(clippy::too_many_arguments)]
+fn add_box_rot_y(
+    scene: &mut Scene,
+    cx: f32,
+    cy: f32,
+    cz: f32,
+    sx: f32,
+    sy: f32,
+    sz: f32,
+    deg: f32,
+    mat: u32,
+) {
     let (sin, cos) = deg.to_radians().sin_cos();
     let rot = |p: Vec3| Vec3::new(p.x * cos + p.z * sin, p.y, -p.x * sin + p.z * cos);
     let tr = |p: Vec3| rot(p) + Vec3::new(cx, cy, cz);
@@ -82,12 +94,54 @@ fn add_box_rot_y(scene: &mut Scene, cx: f32, cy: f32, cz: f32, sx: f32, sy: f32,
     let mx = h;
 
     let a = |x: f32, y: f32, z: f32| tr(Vec3::new(x, y, z));
-    add_quad(scene, a(mx.x, mn.y, mn.z), a(mx.x, mx.y, mn.z), a(mx.x, mx.y, mx.z), a(mx.x, mn.y, mx.z), mat);
-    add_quad(scene, a(mn.x, mn.y, mx.z), a(mn.x, mx.y, mx.z), a(mn.x, mx.y, mn.z), a(mn.x, mn.y, mn.z), mat);
-    add_quad(scene, a(mn.x, mx.y, mn.z), a(mn.x, mx.y, mx.z), a(mx.x, mx.y, mx.z), a(mx.x, mx.y, mn.z), mat);
-    add_quad(scene, a(mn.x, mn.y, mn.z), a(mx.x, mn.y, mn.z), a(mx.x, mn.y, mx.z), a(mn.x, mn.y, mx.z), mat);
-    add_quad(scene, a(mx.x, mn.y, mx.z), a(mx.x, mx.y, mx.z), a(mn.x, mx.y, mx.z), a(mn.x, mn.y, mx.z), mat);
-    add_quad(scene, a(mn.x, mn.y, mn.z), a(mn.x, mx.y, mn.z), a(mx.x, mx.y, mn.z), a(mx.x, mn.y, mn.z), mat);
+    add_quad(
+        scene,
+        a(mx.x, mn.y, mn.z),
+        a(mx.x, mx.y, mn.z),
+        a(mx.x, mx.y, mx.z),
+        a(mx.x, mn.y, mx.z),
+        mat,
+    );
+    add_quad(
+        scene,
+        a(mn.x, mn.y, mx.z),
+        a(mn.x, mx.y, mx.z),
+        a(mn.x, mx.y, mn.z),
+        a(mn.x, mn.y, mn.z),
+        mat,
+    );
+    add_quad(
+        scene,
+        a(mn.x, mx.y, mn.z),
+        a(mn.x, mx.y, mx.z),
+        a(mx.x, mx.y, mx.z),
+        a(mx.x, mx.y, mn.z),
+        mat,
+    );
+    add_quad(
+        scene,
+        a(mn.x, mn.y, mn.z),
+        a(mx.x, mn.y, mn.z),
+        a(mx.x, mn.y, mx.z),
+        a(mn.x, mn.y, mx.z),
+        mat,
+    );
+    add_quad(
+        scene,
+        a(mx.x, mn.y, mx.z),
+        a(mx.x, mx.y, mx.z),
+        a(mn.x, mx.y, mx.z),
+        a(mn.x, mn.y, mx.z),
+        mat,
+    );
+    add_quad(
+        scene,
+        a(mn.x, mn.y, mn.z),
+        a(mn.x, mx.y, mn.z),
+        a(mx.x, mx.y, mn.z),
+        a(mx.x, mn.y, mn.z),
+        mat,
+    );
 }
 
 pub fn build(name: &SceneName, aspect: f32) -> BuiltScene {
@@ -181,7 +235,11 @@ fn build_spheres(aspect: f32) -> BuiltScene {
     let sun = Vec3::new(-0.55, 0.4, -0.75).normalize();
     let mut scene = Scene::new(Environment::sky(sun, Color::new(26.0, 24.0, 20.0)));
 
-    let checker = scene.add_material(Material::checker(2.5, Color::new(0.9, 0.9, 0.9), Color::new(0.12, 0.12, 0.12)));
+    let checker = scene.add_material(Material::checker(
+        2.5,
+        Color::new(0.9, 0.9, 0.9),
+        Color::new(0.12, 0.12, 0.12),
+    ));
     let blue = scene.add_material(Material::lambert(Color::new(0.12, 0.35, 0.7)));
     let glass = scene.add_material(Material::glass(1.5));
     let gold = scene.add_material(Material::pbr(Color::new(1.0, 0.72, 0.25), 1.0, 0.15));

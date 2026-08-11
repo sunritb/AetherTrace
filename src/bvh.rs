@@ -96,7 +96,8 @@ impl Bvh {
         let inv_range = 1.0 / centroid_range;
         for &p in &prims[start..end] {
             let c = aabbs[p as usize].centroid().component(axis);
-            let b = (((c - cmin.component(axis)) * inv_range * (BINS as f32)) as usize).min(BINS - 1);
+            let b =
+                (((c - cmin.component(axis)) * inv_range * (BINS as f32)) as usize).min(BINS - 1);
             bin_count[b] += 1;
             bin_bounds[b].grow_aabb(&aabbs[p as usize]);
         }
@@ -112,11 +113,11 @@ impl Bvh {
             }
             let right_count = count - left_count;
             let mut right_bounds = Aabb::empty();
-            for j in (i + 1)..BINS {
-                right_bounds.grow_aabb(&bin_bounds[j]);
+            for bb in &bin_bounds[(i + 1)..] {
+                right_bounds.grow_aabb(bb);
             }
-            let cost =
-                left_count as f32 * left_bounds.surface_area() + right_count as f32 * right_bounds.surface_area();
+            let cost = left_count as f32 * left_bounds.surface_area()
+                + right_count as f32 * right_bounds.surface_area();
             bin_costs[i] = cost;
             if cost < best_cost {
                 best_cost = cost;
@@ -131,13 +132,17 @@ impl Bvh {
         // Partition primitives around the chosen bin boundary.
         let mut left = start;
         let mut right = end;
-        let split_pos = cmin.component(axis)
-            + ((best_split + 1) as f32 / (BINS as f32)) * centroid_range;
+        let split_pos =
+            cmin.component(axis) + ((best_split + 1) as f32 / (BINS as f32)) * centroid_range;
         while left < right {
-            while left < right && aabbs[prims[left] as usize].centroid().component(axis) <= split_pos {
+            while left < right
+                && aabbs[prims[left] as usize].centroid().component(axis) <= split_pos
+            {
                 left += 1;
             }
-            while left < right && aabbs[prims[right - 1] as usize].centroid().component(axis) > split_pos {
+            while left < right
+                && aabbs[prims[right - 1] as usize].centroid().component(axis) > split_pos
+            {
                 right -= 1;
             }
             if left < right {
@@ -159,12 +164,14 @@ impl Bvh {
 
     /// Find closest hit. Returns hit plus primitive index.
     #[inline]
-    pub fn intersect(&self, shapes: &[Shape], ray: &Ray, t_min: f32, t_max: f32) -> Option<(ShapeHit, u32)> {
-        let inv_dir = Vec3::new(
-            1.0 / ray.dir.x,
-            1.0 / ray.dir.y,
-            1.0 / ray.dir.z,
-        );
+    pub fn intersect(
+        &self,
+        shapes: &[Shape],
+        ray: &Ray,
+        t_min: f32,
+        t_max: f32,
+    ) -> Option<(ShapeHit, u32)> {
+        let inv_dir = Vec3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
         let mut stack = [0u32; 64];
         let mut sp = 0usize;
         stack[sp] = 0;
@@ -185,11 +192,11 @@ impl Bvh {
 
             if node.left == u32::MAX {
                 for &p in &self.prims[node.start as usize..node.end as usize] {
-                    if let Some(h) = shapes[p as usize].hit(ray, t_min, best_t) {
-                        if h.t < best_t || (h.t == best_t && best.map_or(true, |(_, bp)| p < bp)) {
-                            best_t = h.t;
-                            best = Some((h, p));
-                        }
+                    if let Some(h) = shapes[p as usize].hit(ray, t_min, best_t)
+                        && (h.t < best_t || (h.t == best_t && best.is_none_or(|(_, bp)| p < bp)))
+                    {
+                        best_t = h.t;
+                        best = Some((h, p));
                     }
                 }
             } else {
@@ -205,11 +212,7 @@ impl Bvh {
     /// Shadow ray test — true if anything blocks the segment (t_min, t_max).
     #[inline]
     pub fn occluded(&self, shapes: &[Shape], ray: &Ray, t_min: f32, t_max: f32) -> bool {
-        let inv_dir = Vec3::new(
-            1.0 / ray.dir.x,
-            1.0 / ray.dir.y,
-            1.0 / ray.dir.z,
-        );
+        let inv_dir = Vec3::new(1.0 / ray.dir.x, 1.0 / ray.dir.y, 1.0 / ray.dir.z);
         let mut stack = [0u32; 64];
         let mut sp = 0usize;
         stack[sp] = 0;

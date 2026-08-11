@@ -74,14 +74,7 @@ impl Scene {
     }
 
     /// Two-triangle quad, with an option for which side faces out.
-    pub fn add_quad(
-        &mut self,
-        p0: Vec3,
-        p1: Vec3,
-        p2: Vec3,
-        p3: Vec3,
-        material: u32,
-    ) {
+    pub fn add_quad(&mut self, p0: Vec3, p1: Vec3, p2: Vec3, p3: Vec3, material: u32) {
         self.add_triangle(Triangle::flat(p0, p1, p2), material);
         self.add_triangle(Triangle::flat(p0, p2, p3), material);
     }

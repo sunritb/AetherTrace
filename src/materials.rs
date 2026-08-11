@@ -231,7 +231,11 @@ impl Material {
             MaterialKind::Dielectric => {
                 // wo points away from surface; incident = -wo.
                 let cos_i = wo.dot(n).clamp(-1.0, 1.0);
-                let eta = if cos_i > 0.0 { self.ior.recip() } else { self.ior };
+                let eta = if cos_i > 0.0 {
+                    self.ior.recip()
+                } else {
+                    self.ior
+                };
                 let f0 = ((self.ior - 1.0) / (self.ior + 1.0)).powi(2);
                 let fres = schlick(cos_i.abs(), f0);
                 let inc = -wo;

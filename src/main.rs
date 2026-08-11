@@ -94,7 +94,10 @@ fn main() {
     };
 
     let scene_name = from_name(&cli.scene).unwrap_or_else(|| {
-        eprintln!("error: unknown scene '{}'. Choices: cornell, spheres, studio, sunset", cli.scene);
+        eprintln!(
+            "error: unknown scene '{}'. Choices: cornell, spheres, studio, sunset",
+            cli.scene
+        );
         std::process::exit(1);
     });
 
@@ -175,12 +178,14 @@ fn main() {
         if is_final {
             let png_path = format!("{}.png", cli.out);
             let hdr_path = format!("{}.hdr", cli.out);
-            aethertrace::film::write_png(&png_path, &film, exposure, tonemap).expect("failed to write PNG");
+            aethertrace::film::write_png(&png_path, &film, exposure, tonemap)
+                .expect("failed to write PNG");
             aethertrace::film::write_hdr(&hdr_path, &film).expect("failed to write HDR");
             println!("  saved {} (exposure {:+.2} stops)", png_path, exposure);
         } else {
             let path = format!("{}_pass{}.png", cli.out, pass + 1);
-            aethertrace::film::write_png(&path, &film, exposure, tonemap).expect("failed to write PNG");
+            aethertrace::film::write_png(&path, &film, exposure, tonemap)
+                .expect("failed to write PNG");
         }
     }
 

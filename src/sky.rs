@@ -16,10 +16,14 @@ pub enum Environment {
     /// Single solid background color.
     Constant(Color),
     /// Two-hemisphere studio gradient (top/bottom).
-    Studio { top: Color, bottom: Color, horizon: Color },
+    Studio {
+        top: Color,
+        bottom: Color,
+        horizon: Color,
+    },
 }
 
-const FRAC_1_4PI: f32 = 0.07957747154594767; // 1 / (4*pi)
+const FRAC_1_4PI: f32 = 0.079_577_47; // 1 / (4*pi)
 const P_SUN: f32 = 0.5;
 
 impl Environment {
@@ -39,7 +43,11 @@ impl Environment {
     pub fn radiance(&self, dir: Vec3) -> Color {
         match self {
             Environment::Constant(c) => *c,
-            Environment::Studio { top, bottom, horizon } => {
+            Environment::Studio {
+                top,
+                bottom,
+                horizon,
+            } => {
                 let h = 0.5 + 0.5 * dir.y;
                 let g = 1.0 - h;
                 *top * (h * h) + *bottom * (g * g) + *horizon * (2.0 * h * g)
@@ -69,7 +77,11 @@ impl Environment {
                 let glow_term = s.powf(48.0) * *glow;
                 // Sharp sun disk.
                 let cos_alpha = sun_angular_radius.cos();
-                let disk = if s >= cos_alpha { *sun_color } else { Color::zero() };
+                let disk = if s >= cos_alpha {
+                    *sun_color
+                } else {
+                    Color::zero()
+                };
                 base + (*sun_color) * glow_term + disk
             }
         }

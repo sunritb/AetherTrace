@@ -2,7 +2,13 @@
 name = "aethertrace"
 version = "0.1.0"
 edition = "2024"
-description = "AetherTrace — a premium, physically-based path tracer written in Rust."
+description = "AetherTrace — a premium, physically-based path tracer written in Rust: NEE + MIS, binned-SAH BVH, GGX PBR, dielectrics, procedural HDR sky, and progressive multi-threaded rendering."
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/sunritb/AetherTrace"
+keywords = ["ray-tracing", "path-tracer", "rendering", "graphics", "bvh"]
+categories = ["graphics", "multimedia::rendering"]
+exclude = ["render/"]
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }

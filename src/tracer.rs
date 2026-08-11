@@ -104,7 +104,7 @@ fn trace_ray_depth(scene: &Scene, ray: &Ray, rng: &mut Rng, max_depth: usize) ->
                 if rng.f32() > surv {
                     return color;
                 }
-                throughput = throughput / surv;
+                throughput /= surv;
             }
 
             // --- Scatter to the next event ---

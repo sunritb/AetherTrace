@@ -72,10 +72,9 @@ impl Shape {
                 s.center - Vec3::new(s.radius, s.radius, s.radius),
                 s.center + Vec3::new(s.radius, s.radius, s.radius),
             ),
-            Shape::Triangle(t) => Aabb::from_pts(
-                t.v0.min(t.v1).min(t.v2),
-                t.v0.max(t.v1).max(t.v2),
-            ),
+            Shape::Triangle(t) => {
+                Aabb::from_pts(t.v0.min(t.v1).min(t.v2), t.v0.max(t.v1).max(t.v2))
+            }
         }
     }
 
@@ -141,7 +140,7 @@ impl Shape {
                 let inv_det = 1.0 / det;
                 let tvec = ray.origin - t.v0;
                 let u = tvec.dot(pvec) * inv_det;
-                if u < 0.0 || u > 1.0 {
+                if !(0.0..=1.0).contains(&u) {
                     return None;
                 }
                 let qvec = tvec.cross(t.e1);

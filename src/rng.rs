@@ -36,8 +36,8 @@ impl Rng {
     pub fn f32_2(&mut self) -> (f32, f32) {
         let v = self.next();
         (
-            ((v >> 40) as f32) * (1.0 / 16777216.0),      // 24 mantissa bits, [0,1)
-            ((v >> 41) as f32) * (1.0 / 8388608.0),       // 23 mantissa bits, [0,1)
+            ((v >> 40) as f32) * (1.0 / 16777216.0), // 24 mantissa bits, [0,1)
+            ((v >> 41) as f32) * (1.0 / 8388608.0),  // 23 mantissa bits, [0,1)
         )
     }
 

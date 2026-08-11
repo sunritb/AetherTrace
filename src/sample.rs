@@ -24,13 +24,9 @@ pub fn sample_ggx(rng: &mut Rng, roughness: f32) -> (Vec3, f32) {
     let a = roughness * roughness;
     let a2 = a * a;
     let phi = 2.0 * std::f32::consts::PI * v;
-    let cos_theta = ((1.0 - u) / (1.0 + (a2 - 1.0) * u)).max(0.0).min(1.0).sqrt();
+    let cos_theta = ((1.0 - u) / (1.0 + (a2 - 1.0) * u)).clamp(0.0, 1.0).sqrt();
     let sin_theta = (1.0 - cos_theta * cos_theta).max(0.0).sqrt();
-    let dir = Vec3::new(
-        sin_theta * phi.cos(),
-        sin_theta * phi.sin(),
-        cos_theta,
-    );
+    let dir = Vec3::new(sin_theta * phi.cos(), sin_theta * phi.sin(), cos_theta);
     // pdf of the half vector
     let d = a2 / (std::f32::consts::PI * (1.0 + (a2 - 1.0) * cos_theta * cos_theta).powi(2));
     let pdf = d * cos_theta;

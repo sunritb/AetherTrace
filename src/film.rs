@@ -80,7 +80,7 @@ pub fn write_hdr(path: &str, film: &Film) -> std::io::Result<()> {
 
     let mut f = std::io::BufWriter::new(std::fs::File::create(path)?);
     write!(f, "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n")?;
-    write!(f, "-Y {} +X {}\n", h, w)?;
+    writeln!(f, "-Y {} +X {}", h, w)?;
     f.write_all(&bytes)?;
     Ok(())
 }
